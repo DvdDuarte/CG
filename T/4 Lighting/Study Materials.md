@@ -1,0 +1,4 @@
+- Color and Shading - https://www.youtube.com/watch?v=TEjDYtkLRdQ&list=PL_w_qWAQZtAZhtzPI5pkAtcUVgmzdAP8g&index=8 a partir de 9:20
+- Shading and Texturing https://www.youtube.com/watch?v=Is6D5rnWEvs&list=PL_w_qWAQZtAZhtzPI5pkAtcUVgmzdAP8g&index=10 até 21:20
+- Specular and diffuse reflection  https://www.youtube.com/watch?v=sd0BOnN6aNY
+- Check out some materials: http://www.lighthouse3d.com/2014/01/webgl-basic-material-list-from-teapots-c/

@@ -1,0 +1,2 @@
+YouTube: course on Computer Graphics - Kenneth Joy, University of California Davis ([LINK](https://www.youtube.com/playlist?list=PLCc9vhgj7wo6ngh2-tChlI6PruZJW3KPw))
+Geoemtric Transformations Songho ([LINK](http://www.songho.ca/opengl/gl_transform.html))
