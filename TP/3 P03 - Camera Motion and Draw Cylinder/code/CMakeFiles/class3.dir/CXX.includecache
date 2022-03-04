@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/sleiman/CG/TP/3 P03 - Camera Motion and Draw Cylinder/code/main.cpp
+GLUT/glut.h
+-
+GL/glut.h
+-
+math.h
+-
+

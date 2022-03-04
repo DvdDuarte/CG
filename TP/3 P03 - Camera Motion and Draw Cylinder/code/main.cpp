@@ -32,13 +32,103 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
+void draw_axis(){
+    glBegin(GL_LINES);
+    // X axis in red
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertex3f(-100.0f, 0.0f, 0.0f);
+    glVertex3f( 100.0f, 0.0f, 0.0f);
+    // Y Axis in Green
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex3f(0.0f, -100.0f, 0.0f);
+    glVertex3f(0.0f, 100.0f, 0.0f);
+    // Z Axis in Blue
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(0.0f, 0.0f,-100.0f);
+    glVertex3f(0.0f, 0.0f, 100.0f);
+    glEnd();
+}
 
 void drawCylinder(float radius, float height, int slices) {
 
 // put code to draw cylinder in here
+	
+	// Base
+	float angle = (2*M_PI) / slices;
+	for (int slice = 1; slice <= slices; slice++){
+		glBegin(GL_TRIANGLES);
+		if(slice%2 == 0) glColor3f(1.0f,0.2f,1.0f);
+		else glColor3f(1.0f,0.0f,1.0f);
+		glVertex3f(0,0,0);
+		glVertex3f(radius*sin(angle*slice),0,radius*cos(angle*slice));
+		glVertex3f(radius*sin(angle*(slice+1)),0,radius*cos(angle*(slice+1)));
+		glEnd();
+	}
+
+	// Slices
+	for(int side = 1; side <= slices; side++){
+		glBegin(GL_TRIANGLES);
+		// 1 Triangulo
+		glColor3f(0.0f,0.5f,1.0f);
+		glVertex3f(radius*sin(angle*(side+1)),0,radius*cos(angle*(side+1))); // P1
+		glVertex3f(radius*sin(angle*(side+1)),height,radius*cos(angle*(side+1))); // P2
+		glVertex3f(radius*sin(angle*side),height,radius*cos(angle*side)); // P3		
+
+		// 2 Triangulo
+		glColor3f(0.0f,0.3f,1.0f);
+		glVertex3f(radius*sin(angle*side),height,radius*cos(angle*side)); // P3
+		glVertex3f(radius*sin(angle*side),0,radius*cos(angle*side)); // P4
+		glVertex3f(radius*sin(angle*(side+1)),0,radius*cos(angle*(side+1))); // P1x
+
+		glEnd();
+	}
+
+	// Topo
+	for (int slice = 1; slice <= slices; slice++){
+		glBegin(GL_TRIANGLES);
+		if(slice%2 == 0) glColor3f(0.0f,0.2f,1.0f);
+		else glColor3f(0.0f,0.0f,1.0f);
+		glVertex3f(0,height,0);
+		glVertex3f(radius*sin(angle*slice),height,radius*cos(angle*slice));
+		glVertex3f(radius*sin(angle*(slice+1)),height,radius*cos(angle*(slice+1)));
+		glEnd();
+	}
 
 }
 
+
+void drawCone(float radius, float height, int slices) {
+
+// put code to draw cone in here
+	
+	// Base
+	float angle = (2*M_PI) / slices;
+	for (int slice = 1; slice <= slices; slice++){
+		glBegin(GL_TRIANGLES);
+		if(slice%2 == 0) glColor3f(1.0f,0.2f,1.0f);
+		else glColor3f(1.0f,0.0f,1.0f);
+		glVertex3f(0,0,0);
+		glVertex3f(radius*sin(angle*slice),0,radius*cos(angle*slice));
+		glVertex3f(radius*sin(angle*(slice+1)),0,radius*cos(angle*(slice+1)));
+		glEnd();
+	}
+
+	// Slices
+	float color = 0.0;
+	for(int side = 1; side <= slices; side++){
+		glBegin(GL_TRIANGLES);
+
+		// 1 Triangulo
+		glColor3f(color,0.0f,0.0f);
+		glVertex3f(radius*sin(angle*(side+1)),0,radius*cos(angle*(side+1))); // P1
+		glVertex3f(0,height,0); // P2
+		glVertex3f(radius*sin(angle*side),0,radius*cos(angle*side)); // P4	
+		color = color + 0.1;
+
+		glEnd();
+	}
+
+}
 
 void renderScene(void) {
 
@@ -51,7 +141,9 @@ void renderScene(void) {
 		      0.0,0.0,0.0,
 			  0.0f,1.0f,0.0f);
 
-	drawCylinder(1,2,10);
+	//draw_axis();
+	drawCylinder(1,2,20);
+	drawCone(1,2,20);
 
 	// End of frame
 	glutSwapBuffers();
@@ -70,7 +162,6 @@ void processSpecialKeys(int key, int xx, int yy) {
 // put code to process special keys in here
 
 }
-
 
 int main(int argc, char **argv) {
 
