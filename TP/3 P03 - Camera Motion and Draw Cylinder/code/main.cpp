@@ -65,7 +65,7 @@ void drawCylinder(float radius, float height, int slices) {
 		glEnd();
 	}
 
-	// Slices
+	// Sides
 	for(int side = 1; side <= slices; side++){
 		glBegin(GL_TRIANGLES);
 		// 1 Triangulo
@@ -113,7 +113,7 @@ void drawCone(float radius, float height, int slices) {
 		glEnd();
 	}
 
-	// Slices
+	// Sides
 	float color = 0.0;
 	for(int side = 1; side <= slices; side++){
 		glBegin(GL_TRIANGLES);
@@ -142,7 +142,7 @@ void renderScene(void) {
 			  0.0f,1.0f,0.0f);
 
 	//draw_axis();
-	drawCylinder(1,2,20);
+	//drawCylinder(1,2,20);
 	drawCone(1,2,20);
 
 	// End of frame
