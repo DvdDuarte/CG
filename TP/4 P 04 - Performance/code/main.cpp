@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <stdlib.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -9,10 +9,19 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <vector>
+
+using namespace std;
 
 float alfa = 0.0f, beta = 0.0f, radius = 5.0f;
 float camX, camY, camZ;
 
+int timebase;
+float frames;
+
+vector<float>  vertexB;
+GLuint buffers[1];
+size_t n_vertices;
 
 void spherical2Cartesian() {
 
@@ -108,6 +117,7 @@ void cylinder(float radius, float height, int sides) {
 	step = 360.0 / sides;
 
 	glBegin(GL_TRIANGLES);
+	glColor3f(1,1,1);
 
 	// top
 	for (i = 0; i < sides; i++) {
@@ -137,6 +147,80 @@ void cylinder(float radius, float height, int sides) {
 	glEnd();
 }
 
+void cylinderVBO(float radius, float height, int sides) {
+    int pos;
+	
+	float step = (2 * M_PI) / sides;
+
+	// TOPO
+	for(int i = 0; i < sides; i++) {
+		vertexB.push_back(0);
+		vertexB.push_back(height*0.5);
+		vertexB.push_back(0);
+		vertexB.push_back(cos(i * step) * radius);
+		vertexB.push_back(height*0.5);
+		vertexB.push_back(-sin(i * step) * radius);
+		vertexB.push_back(cos((i + 1) * step) * radius);
+		vertexB.push_back(height*0.5);
+		vertexB.push_back(-sin((i + 1) * step) * radius);
+	}
+
+	// BOTTOM
+	for(int i = 0; i < sides; i++){
+		vertexB.push_back(0);
+		vertexB.push_back(-height*0.5);
+		vertexB.push_back(0);
+		vertexB.push_back(cos((i + 1) * step) * radius);
+		vertexB.push_back(-height*0.5);
+		vertexB.push_back(-sin((i + 1) * step) * radius);
+		vertexB.push_back(cos(i * step) * radius);
+		vertexB.push_back(-height*0.5);
+		vertexB.push_back(-sin(i * step) * radius);
+	}
+
+	// BODY
+	for(int i = 0; i <= sides; i++){
+		vertexB.push_back(cos(i * step)*radius);
+        vertexB.push_back(height*0.5);
+        vertexB.push_back(-sin(i * step)*radius);
+        vertexB.push_back(cos(i * step)*radius);
+        vertexB.push_back(-height*0.5);
+        vertexB.push_back(-sin(i * step)*radius);
+        vertexB.push_back(cos((i + 1) * step)*radius);
+        vertexB.push_back(height*0.5);
+        vertexB.push_back(-sin((i + 1) * step)*radius);
+
+        vertexB.push_back(cos(i * step)*radius);
+        vertexB.push_back(-height*0.5);
+        vertexB.push_back(-sin(i * step)*radius);
+        vertexB.push_back(cos((i + 1) * step)*radius);
+        vertexB.push_back(-height*0.5);
+        vertexB.push_back(-sin((i + 1) * step)*radius);
+        vertexB.push_back(cos((i + 1) * step)*radius);
+        vertexB.push_back(height*0.5);
+        vertexB.push_back(-sin((i + 1) * step)*radius);
+	}
+
+	n_vertices = vertexB.size();
+
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexB.data()) * n_vertices, &vertexB[0], GL_STATIC_DRAW);
+
+}
+
+void frameRate(){
+    char title[50];
+    frames++;
+    double time = glutGet(GLUT_ELAPSED_TIME);
+    
+    if (time - timebase> 1000) {
+        double fps = frames * 1000.0 / (time - timebase);
+        timebase = time;
+        frames = 0;
+        sprintf(title, "CG@DI-UM | %lf FPS", fps);
+        glutSetWindowTitle(title);
+    }
+}
 
 void renderScene(void) {
 
@@ -149,7 +233,11 @@ void renderScene(void) {
 		0.0, 0.0, 0.0,
 		0.0f, 1.0f, 0.0f);
 
-	cylinder(1,2,10);
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+    glVertexPointer(3, GL_FLOAT, 0, 0);
+    glDrawArrays(GL_TRIANGLES, 0, vertexB.size());
+
+	frameRate();
 
 	// End of frame
 	glutSwapBuffers();
@@ -205,7 +293,7 @@ void printInfo() {
 	printf("Version: %s\n", glGetString(GL_VERSION));
 
 	printf("\nUse Arrows to move the camera up/down and left/right\n");
-	printf("Home and End control the distance from the camera to the origin");
+	printf("Page Up and Page Down control the distance from the camera to the origin\n");
 }
 
 
@@ -226,6 +314,7 @@ int main(int argc, char **argv) {
 	glutKeyboardFunc(processKeys);
 	glutSpecialFunc(processSpecialKeys);
 
+	// init GLEW
 #ifndef __APPLE__
 	glewInit();
 #endif
@@ -233,11 +322,16 @@ int main(int argc, char **argv) {
 //  OpenGL settings
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnableClientState(GL_VERTEX_ARRAY);
 	glPolygonMode(GL_FRONT, GL_LINE);
 
 	spherical2Cartesian();
 
 	printInfo();
+
+	glGenBuffers(1, buffers);
+    //cylinderVBO(atof(argv[1]),atof(argv[2]),atof(argv[3]));
+    cylinderVBO(1,2,10);
 
 // enter GLUT's main cycle
 	glutMainLoop();

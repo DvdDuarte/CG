@@ -1,0 +1,3 @@
+/home/sleiman/CG/TP/4 P 04 - Performance/code/build/CMakeFiles/rebuild_cache.dir
+/home/sleiman/CG/TP/4 P 04 - Performance/code/build/CMakeFiles/edit_cache.dir
+/home/sleiman/CG/TP/4 P 04 - Performance/code/build/CMakeFiles/class4.dir

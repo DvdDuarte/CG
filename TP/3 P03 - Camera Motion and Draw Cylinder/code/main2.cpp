@@ -152,7 +152,7 @@ void drawCylinder(float radius, float height, int slices) {
 }
 
 
-void drawCone(float radius, float height, int slices) {
+void drawCone(float radius, float height, int stacks, int slices) {
 
 // put code to draw cone in here
 	
@@ -197,9 +197,9 @@ void renderScene(void) {
 			  0.0f,1.0f,0.0f);
 
 	//draw_axis();
-    drawPlane(5,10);
-	drawCylinder(1,2,20);
-	//drawCone(1,2,20);
+    //drawPlane(5,10);
+	//drawCylinder(1,2,20);
+	drawCone(1,2,2,4);
 
 	// End of frame
 	glutSwapBuffers();

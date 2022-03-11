@@ -142,8 +142,8 @@ void renderScene(void) {
 			  0.0f,1.0f,0.0f);
 
 	//draw_axis();
-	//drawCylinder(1,2,20);
-	drawCone(1,2,20);
+	drawCylinder(1,2,20);
+	//drawCone(1,2,20);
 
 	// End of frame
 	glutSwapBuffers();
