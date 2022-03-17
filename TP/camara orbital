@@ -1,0 +1,44 @@
+
+float x_cam = 5.0f, y_cam = 0.0f, z_cam = 5.0f, cam_radius = 10.0f;
+float cam_angle_increment = (M_PI/2) / 20;
+float cam_angle = (M_PI/2)/2;
+float cam_vertical_angle = (M_PI / 2) / 4;
+
+
+//Render scene
+gluLookAt(x_cam,y_cam,z_cam, 
+		      x_eye,y_eye,z_eye,
+			  0.0f,1.0f,0.0f);
+    
+//Função das teclas
+    case 'a':
+		x_cam = cam_radius * sin(cam_angle + cam_angle_increment) * cos(cam_vertical_angle);
+		z_cam = cam_radius * cos(cam_vertical_angle) * cos(cam_angle + cam_angle_increment);
+		y_cam = cam_radius * sin(cam_vertical_angle);
+		cam_angle += cam_angle_increment;
+		break;
+	case 'd':
+		x_cam = cam_radius * sin(cam_angle - cam_angle_increment) * cos(cam_vertical_angle);
+		z_cam = cam_radius * cos(cam_vertical_angle) * cos(cam_angle - cam_angle_increment);
+		y_cam = cam_radius * sin(cam_vertical_angle);
+
+		cam_angle -= cam_angle_increment;
+		break;
+	case 'w':
+		if ((cam_vertical_angle + cam_angle_increment) < M_PI / 2) {
+			cam_vertical_angle += cam_angle_increment;
+			z_cam = cam_radius * cos(cam_vertical_angle) * cos(cam_angle);
+			y_cam = cam_radius * sin(cam_vertical_angle);
+			x_cam = cam_radius * sin(cam_angle) * cos(cam_vertical_angle);
+		}
+		break;
+	case 's':
+		if ((cam_vertical_angle - cam_angle_increment) > -(M_PI / 2)) {
+			cam_vertical_angle -= cam_angle_increment;
+			z_cam = cam_radius * cos(cam_vertical_angle) * cos(cam_angle);
+			y_cam = cam_radius * sin(cam_vertical_angle);
+			x_cam = cam_radius * sin(cam_angle) * cos(cam_vertical_angle);
+		}
+		break;
+
+
