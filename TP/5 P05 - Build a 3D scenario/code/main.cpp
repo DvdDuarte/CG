@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+
 #include <GL/glut.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -15,6 +17,9 @@ void spherical2Cartesian() {
 	camZ = radius * cos(beta) * cos(alfa);
 }
 
+int r = 50;
+int ri = 35;
+int rc = 15;
 
 void changeSize(int w, int h) {
 
@@ -54,37 +59,6 @@ void renderScene(void) {
 		0.0, 0.0, 0.0,
 		0.0f, 1.0f, 0.0f);
 
-
-	for(int i = 0; i < 10; i++){
-		srand(1234);
-		glColor3f(0.2f, 0.8f, 0.2f);
-		float raio = rand();
-		float altura = rand();
-		float slices = rand();
-		float stacks = rand();
-		glTranslatef(10*(i+1),10,(10*i+1));
-		glutSolidCone(raio,altura,slices,stacks);
-		glPushMatrix();
-
-		glColor3f(0.1f, 0.0f, 0.0f);
-		glTranslatef(10*i+1,-10,10*i+1);
-		glutSolidTorus(1,3,3,4);
-		glPushMatrix();
-
-
-	}
-
-	for (int i = 0; i < 8 ;i++) {
-		glColor3f(0.0f, 0.1f, 0.1f);
-		glRotatef(45,1,1,1);
-		glTranslatef(10*i,0,10*i);
-		glutSolidTeapot(10);
-
-	}
-	glPopMatrix();
-	
-
-
 	glColor3f(0.2f, 0.8f, 0.2f);
 	glBegin(GL_TRIANGLES);
 		glVertex3f(100.0f, 0, -100.0f);
@@ -101,7 +75,45 @@ void renderScene(void) {
 	
 	// put code to draw scene in here
 	
-	glutSwapBuffers();
+	glColor3ub(255,0,0);
+	for(int i = 0; i < 16; i++) { // Anel de TeaPot vermelho
+		glPushMatrix();
+		glRotated(22.5 * i, 0, 1, 0);
+		glTranslated(ri, 1, 0);
+		glutSolidTeapot(2);
+		glPopMatrix();
+	}
+
+	glColor3ub(0,0,255);
+	for(int i = 0; i < 8; i++) { // Anel de TeaPot azul
+		glPushMatrix();
+		glRotated(45.0 * i, 0, 1, 0);
+		glTranslated(rc, 1, 0);
+		glutSolidTeapot(2);
+		glPopMatrix();
+	}
+
+	glColor3ub(255,0,255);
+	glutSolidTorus(1,3,10,10); // Donut rosa no meio do mapa
+
+	for(int i = 0; i < 300; i++) {
+		glPushMatrix();
+		double posx = 0, posz = 0;
+		while(pow(posx,2) + pow(posz,2) < pow(r,2)) {
+			posx = (rand() % (r * 4)) - (r * 2);
+			posz = (rand() % (r * 4)) - (r * 2);
+		}
+		glTranslated(posx, 0, posz);
+		glRotated(-90, 1, 0, 0);
+		glColor3ub(102,62,36);
+		glutSolidCone(0.5, 2, 10, 10); // Tronco da arvore
+		glTranslated(0, 0, 2);
+		glColor3ub(0,255,0);
+		glutSolidCone(2, 4, 10, 10); // Folhas da arvore
+		glPopMatrix();
+	}
+
+		glutSwapBuffers();
 }
 
 
@@ -159,6 +171,8 @@ void printInfo() {
 
 
 int main(int argc, char **argv) {
+
+	srand(time(NULL));
 
 // init GLUT and the window
 	glutInit(&argc, argv);
