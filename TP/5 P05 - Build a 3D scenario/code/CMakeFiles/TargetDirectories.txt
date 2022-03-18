@@ -1,0 +1,3 @@
+/home/sleiman/CG/TP/5 P05 - Build a 3D scenario/code/CMakeFiles/rebuild_cache.dir
+/home/sleiman/CG/TP/5 P05 - Build a 3D scenario/code/CMakeFiles/edit_cache.dir
+/home/sleiman/CG/TP/5 P05 - Build a 3D scenario/code/CMakeFiles/class5.dir

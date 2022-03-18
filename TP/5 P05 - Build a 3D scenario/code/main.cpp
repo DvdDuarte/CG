@@ -1,5 +1,6 @@
 #include <stdio.h>
-
+#include <stdlib.h>
+#include <GL/glut.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -53,6 +54,37 @@ void renderScene(void) {
 		0.0, 0.0, 0.0,
 		0.0f, 1.0f, 0.0f);
 
+
+	for(int i = 0; i < 10; i++){
+		srand(1234);
+		glColor3f(0.2f, 0.8f, 0.2f);
+		float raio = rand();
+		float altura = rand();
+		float slices = rand();
+		float stacks = rand();
+		glTranslatef(10*(i+1),10,(10*i+1));
+		glutSolidCone(raio,altura,slices,stacks);
+		glPushMatrix();
+
+		glColor3f(0.1f, 0.0f, 0.0f);
+		glTranslatef(10*i+1,-10,10*i+1);
+		glutSolidTorus(1,3,3,4);
+		glPushMatrix();
+
+
+	}
+
+	for (int i = 0; i < 8 ;i++) {
+		glColor3f(0.0f, 0.1f, 0.1f);
+		glRotatef(45,1,1,1);
+		glTranslatef(10*i,0,10*i);
+		glutSolidTeapot(10);
+
+	}
+	glPopMatrix();
+	
+
+
 	glColor3f(0.2f, 0.8f, 0.2f);
 	glBegin(GL_TRIANGLES);
 		glVertex3f(100.0f, 0, -100.0f);
@@ -63,11 +95,11 @@ void renderScene(void) {
 		glVertex3f(-100.0f, 0, 100.0f);
 		glVertex3f(100.0f, 0, 100.0f);
 	glEnd();
+	
 	// End of frame
 	
 	
 	// put code to draw scene in here
-	
 	
 	glutSwapBuffers();
 }
@@ -122,7 +154,7 @@ void printInfo() {
 	printf("Version: %s\n", glGetString(GL_VERSION));
 
 	printf("\nUse Arrows to move the camera up/down and left/right\n");
-	printf("Home and End control the distance from the camera to the origin");
+	printf("Home and End control the distance from the camera to the origin\n");
 }
 
 
