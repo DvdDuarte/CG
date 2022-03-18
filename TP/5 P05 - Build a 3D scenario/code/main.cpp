@@ -1,11 +1,5 @@
 #include <stdio.h>
 
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
-
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -70,6 +64,11 @@ void renderScene(void) {
 		glVertex3f(100.0f, 0, 100.0f);
 	glEnd();
 	// End of frame
+	
+	
+	// put code to draw scene in here
+	
+	
 	glutSwapBuffers();
 }
 
