@@ -75,6 +75,7 @@ void renderScene(void) {
 		      0.0,0.0,0.0,
 			  0.0f,1.0f,0.0f);
 
+	glColor3f(0.0,1.0,0.0);
 	drawTerrain();
 
 	// just so that it renders something before the terrain is built
@@ -214,7 +215,7 @@ int main(int argc, char **argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE|GLUT_RGBA);
 	glutInitWindowPosition(100,100);
-	glutInitWindowSize(320,320);
+	glutInitWindowSize(1920,1080);
 	glutCreateWindow("CG@DI-UM");
 		
 	glEnableClientState(GL_VERTEX_ARRAY);
