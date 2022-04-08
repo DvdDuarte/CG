@@ -1,0 +1,3 @@
+/home/sleiman/CG/TP/8 P08 - Catmull-Rom Curves/code/CMakeFiles/rebuild_cache.dir
+/home/sleiman/CG/TP/8 P08 - Catmull-Rom Curves/code/CMakeFiles/edit_cache.dir
+/home/sleiman/CG/TP/8 P08 - Catmull-Rom Curves/code/CMakeFiles/class8.dir

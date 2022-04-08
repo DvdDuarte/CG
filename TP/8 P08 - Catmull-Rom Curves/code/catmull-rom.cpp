@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -7,6 +9,8 @@
 #else
 #include <GL/glut.h>
 #endif
+
+
 
 
 float camX = 0, camY, camZ = 5;
@@ -51,6 +55,17 @@ float length(float *v) {
 
 }
 
+/*
+void multMatrixVector(float m[4][4], float *v, float *res) {
+	for (int j = 0; j < 4; ++j){
+		res[j] = 0;
+		for (int k = 0; k < 4; ++k) {
+			res[j] += v[k] * m[j][k];
+		}
+	}
+}
+*/
+
 void multMatrixVector(float *m, float *v, float *res) {
 
 	for (int j = 0; j < 4; ++j) {
@@ -62,7 +77,6 @@ void multMatrixVector(float *m, float *v, float *res) {
 
 }
 
-
 void getCatmullRomPoint(float t, float *p0, float *p1, float *p2, float *p3, float *pos, float *deriv) {
 
 	// catmull-rom matrix
@@ -70,14 +84,22 @@ void getCatmullRomPoint(float t, float *p0, float *p1, float *p2, float *p3, flo
 						{ 1.0f, -2.5f,  2.0f, -0.5f},
 						{-0.5f,  0.0f,  0.5f,  0.0f},
 						{ 0.0f,  1.0f,  0.0f,  0.0f}};
-			
-	// Compute A = M * P
-	
-	// Compute pos = T * A
-	
-	// compute deriv = T' * A
 
-	// ...
+
+	for(int i = 0; i < 3; i++) {	 // i = x, y, z
+		float p[4] = {p0[i], p1[i], p2[i], p3[i]};
+		float a[4];
+		// Compute A = M * P
+		multMatrixVector((float *)m, p, a);
+		
+		pos[i] = powf(t,3.0) * a[0] + powf(t,2.0) * a[1] + t * a[2] + a[3];
+		// Compute pos = T * A
+		
+		// compute deriv = T' * A
+		deriv[i] = 3*powf(t,2.0) * a[0] + 2 * t * a[1] + a[2];
+
+		// ...
+	}
 }
 
 
@@ -123,12 +145,23 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
+#define TESSELATION 100.0
 
 void renderCatmullRomCurve() {
-
+	float pos[3];
+	float deriv[3];
 // draw curve using line segments with GL_LINE_LOOP
+	glBegin(GL_LINE_LOOP);
+	float gt = 0;
+	while (gt < 1) {
+		getGlobalCatmullRomPoint(gt, pos, deriv);
+		glVertex3f(pos[0],pos[1],pos[2]);
+		gt += 1.0/TESSELATION;
+	}
+	glEnd();
 }
 
+float prev_y[3] = {0,-1,0};
 
 void renderScene(void) {
 
@@ -146,6 +179,29 @@ void renderScene(void) {
 
 	// apply transformations here
 	// ...
+	float pos[3];
+	float deriv[3];
+
+	getGlobalCatmullRomPoint(t, pos, deriv);
+
+	glTranslatef(pos[0], pos[1], pos[2]);
+
+	float x[3] = {deriv[0], deriv[1], deriv[2]};
+	normalize(x);
+	float z[3];
+	cross(x, prev_y, z);
+	normalize(z);
+	float y[3];
+	cross(z,x,y);
+	normalize(y);
+	memcpy(prev_y, y, 3 * sizeof(float));
+
+	float m[16];
+
+	buildRotMatrix(x,y,z,m);
+
+	glMultMatrixf(m);
+
 	glutWireTeapot(0.1);
 
 
@@ -226,7 +282,7 @@ int main(int argc, char **argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE|GLUT_RGBA);
 	glutInitWindowPosition(100,100);
-	glutInitWindowSize(320,320);
+	glutInitWindowSize(1920,1080);
 	glutCreateWindow("CG@DI-UM");
 		
 // callback registration 

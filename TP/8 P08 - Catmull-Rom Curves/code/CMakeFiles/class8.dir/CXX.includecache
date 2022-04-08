@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/sleiman/CG/TP/8 P08 - Catmull-Rom Curves/code/catmull-rom.cpp
+stdlib.h
+-
+stdio.h
+-
+string.h
+-
+math.h
+-
+GLUT/glut.h
+-
+GL/glut.h
+-
+
