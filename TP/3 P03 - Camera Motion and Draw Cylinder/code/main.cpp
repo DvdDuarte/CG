@@ -1,11 +1,44 @@
+#include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
 #include <GL/glut.h>
 #endif
 
+
 #define _USE_MATH_DEFINES
-#include <math.h>
+
+
+float camX = 00, camY = 30, camZ = 40;
+int startX, startY, tracking = 0;
+float raio = 10;
+
+float alpha = 0, beta = 35, r = 10;
+
+int w,h;
+char s[30];
+int timebase=0;
+int frame=0;
+
+float orange[4] = {0.8f, 0.4f , 0.4f,1.0f};
+float green[4] = {0.4f, 0.8f, 0.4f, 1.0f};
+float black[4] = {0.0f,0.0f,0.0f,0.0f};
+float white[4] = {1.0f, 1.0f , 1.0f,1.0f};
+float blue[4] = { 0.0f, 0.45f, 0.8f, 1.0f };
+
+unsigned int picked = 0;
+
+
+void converte() {
+
+	camX = raio * cos(beta) * sin(alpha);
+	camY = raio * sin(beta);
+	camZ = raio * cos(beta) * cos(alpha);
+}
 
 void changeSize(int w, int h) {
 
@@ -130,6 +163,53 @@ void drawCone(float radius, float height, int slices) {
 
 }
 
+void drawCube() {
+	   glBegin(GL_QUADS);                // Begin drawing the color cube with 6 quads
+      // Top face (y = 1.0f)
+      // Define vertices in counter-clockwise (CCW) order with normal pointing out
+      glColor3f(0.0f, 1.0f, 0.0f);     // Green
+      glVertex3f( 1.0f, 1.0f, -1.0f);
+      glVertex3f(-1.0f, 1.0f, -1.0f);
+      glVertex3f(-1.0f, 1.0f,  1.0f);
+      glVertex3f( 1.0f, 1.0f,  1.0f);
+ 
+      // Bottom face (y = -1.0f)
+      glColor3f(1.0f, 0.5f, 0.0f);     // Orange
+      glVertex3f( 1.0f, -1.0f,  1.0f);
+      glVertex3f(-1.0f, -1.0f,  1.0f);
+      glVertex3f(-1.0f, -1.0f, -1.0f);
+      glVertex3f( 1.0f, -1.0f, -1.0f);
+ 
+      // Front face  (z = 1.0f)
+      glColor3f(1.0f, 0.0f, 0.0f);     // Red
+      glVertex3f( 1.0f,  1.0f, 1.0f);
+      glVertex3f(-1.0f,  1.0f, 1.0f);
+      glVertex3f(-1.0f, -1.0f, 1.0f);
+      glVertex3f( 1.0f, -1.0f, 1.0f);
+ 
+      // Back face (z = -1.0f)
+      glColor3f(1.0f, 1.0f, 0.0f);     // Yellow
+      glVertex3f( 1.0f, -1.0f, -1.0f);
+      glVertex3f(-1.0f, -1.0f, -1.0f);
+      glVertex3f(-1.0f,  1.0f, -1.0f);
+      glVertex3f( 1.0f,  1.0f, -1.0f);
+ 
+      // Left face (x = -1.0f)
+      glColor3f(0.0f, 0.0f, 1.0f);     // Blue
+      glVertex3f(-1.0f,  1.0f,  1.0f);
+      glVertex3f(-1.0f,  1.0f, -1.0f);
+      glVertex3f(-1.0f, -1.0f, -1.0f);
+      glVertex3f(-1.0f, -1.0f,  1.0f);
+ 
+      // Right face (x = 1.0f)
+      glColor3f(1.0f, 0.0f, 1.0f);     // Magenta
+      glVertex3f(1.0f,  1.0f, -1.0f);
+      glVertex3f(1.0f,  1.0f,  1.0f);
+      glVertex3f(1.0f, -1.0f,  1.0f);
+      glVertex3f(1.0f, -1.0f, -1.0f);
+   glEnd();  // End of drawing color-cube
+}
+
 void renderScene(void) {
 
 	// clear buffers
@@ -141,20 +221,111 @@ void renderScene(void) {
 		      0.0,0.0,0.0,
 			  0.0f,1.0f,0.0f);
 
-	//draw_axis();
-	drawCylinder(1,2,20);
+	draw_axis();
+	//drawCylinder(1,2,20);
+	//drawCube();
+	glRotatef(45, 0, 0, 1);
+	glTranslatef(0,sin(45),cos(45));
+	drawCube();
 	//drawCone(1,2,20);
-
 	// End of frame
 	glutSwapBuffers();
 }
 
 
-void processKeys(unsigned char c, int xx, int yy) {
+void processNormalKeys(unsigned char key, int x, int y) {
 
-// put code to process regular keys in here
-
+	switch(key) {
+	
+		case 27: exit(0);
+		case 'c': printf("Camera : %f %f %f\n", alpha, beta, r); break;
+	}
 }
+
+unsigned char  picking(int x, int y) {
+
+	unsigned char res[4];
+
+	return res[0];
+}
+
+void processMouseButtons(int button, int state, int xx, int yy) 
+{
+	printf("%d %d\n", xx, yy);
+	if (state == GLUT_DOWN)  {
+		startX = xx;
+		startY = yy;
+		if (button == GLUT_LEFT_BUTTON)
+			tracking = 1;
+		else if (button == GLUT_RIGHT_BUTTON)
+			tracking = 2;
+		else { // Middle button
+			tracking = 0;
+			picked = picking(xx,yy);
+			if (picked)
+				printf("Picked Snowman number %d\n", picked);
+			else
+				printf("Nothing selected\n");
+			glutPostRedisplay();
+		}
+	}
+	else if (state == GLUT_UP) {
+		if (tracking == 1) {
+			alpha += (xx - startX);
+			beta += (yy - startY);
+		}
+		else if (tracking == 2) {
+			
+			r -= yy - startY;
+			if (r < 3)
+				r = 3.0;
+		}
+		tracking = 0;
+	}
+}
+
+
+void processMouseMotion(int xx, int yy)
+{
+
+	int deltaX, deltaY;
+	int alphaAux, betaAux;
+	int rAux;
+
+	if (!tracking)
+		return;
+
+	deltaX = xx - startX;
+	deltaY = yy - startY;
+
+	if (tracking == 1) {
+
+
+		alphaAux = alpha + deltaX;
+		betaAux = beta + deltaY;
+
+		if (betaAux > 85.0)
+			betaAux = 85.0;
+		else if (betaAux < -85.0)
+			betaAux = -85.0;
+
+		rAux = r;
+	}
+	else if (tracking == 2) {
+
+		alphaAux = alpha;
+		betaAux = beta;
+		rAux = r - deltaY;
+		if (rAux < 3)
+			rAux = 3;
+	}
+	camX = rAux * sin(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
+	camZ = rAux * cos(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
+	camY = rAux * 							     sin(betaAux * 3.14 / 180.0);
+
+	glutPostRedisplay();
+}
+
 
 
 void processSpecialKeys(int key, int xx, int yy) {
@@ -172,13 +343,14 @@ int main(int argc, char **argv) {
 	glutInitWindowSize(800,800);
 	glutCreateWindow("CG@DI-UM");
 		
-// Required callback registry 
+// registo de funções 
 	glutDisplayFunc(renderScene);
 	glutReshapeFunc(changeSize);
-	
-// Callback registration for keyboard processing
-	glutKeyboardFunc(processKeys);
-	glutSpecialFunc(processSpecialKeys);
+
+// registo da funções do teclado e rato
+	glutKeyboardFunc(processNormalKeys);
+	glutMouseFunc(processMouseButtons);
+	glutMotionFunc(processMouseMotion);
 
 //  OpenGL settings
 	glEnable(GL_DEPTH_TEST);
